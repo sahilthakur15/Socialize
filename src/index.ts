@@ -1,7 +1,11 @@
 import express, { Application, Request, Response } from 'express';
 import sequelize from './config/dbconnect';
+import "./models/usersModel";
+import userRoutes from './routes/userRoutes';
 import { config } from 'dotenv';
 config();
+
+
 
 const app: Application = express();
 const port: number = 3000;
@@ -14,6 +18,9 @@ sequelize
   .catch((error) => {
     console.error('Unable to connect to the database:', error.message);
   });
+
+  app.use('/api/users', userRoutes);
+
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to my Server');

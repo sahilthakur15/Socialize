@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dbconnect_1 = __importDefault(require("./config/dbconnect"));
+require("./models/usersModel");
+const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)();
 const app = (0, express_1.default)();
@@ -17,6 +19,7 @@ dbconnect_1.default
     .catch((error) => {
     console.error('Unable to connect to the database:', error.message);
 });
+app.use('/api/users', userRoutes_1.default);
 app.get('/', (req, res) => {
     res.send('Welcome to my Server');
 });
