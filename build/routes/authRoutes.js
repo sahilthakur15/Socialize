@@ -12,23 +12,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.connectDatabase = exports.dbconnect = void 0;
-const sequelize_1 = require("sequelize");
-const dotenv_1 = require("dotenv");
-const logger_1 = __importDefault(require("../utils/logger/logger"));
-(0, dotenv_1.config)();
-const dbconnect = new sequelize_1.Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
-});
-exports.dbconnect = dbconnect;
-const connectDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
+const express_1 = __importDefault(require("express"));
+const routes_1 = require("../utils/ENUMS/routes");
+const authController_1 = require("../controllers/authController");
+const router = express_1.default.Router();
+router.post(routes_1.AuthRoutes.REGISTER, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield dbconnect.authenticate();
-        logger_1.default.info('Connection has been established successfully.');
+        yield (0, authController_1.registerUser)(req, res);
     }
     catch (error) {
-        logger_1.default.error('Unable to connect to the database:', error);
+        res.status(500).json({ message: 'Internal Server Error', error: error });
     }
-});
-exports.connectDatabase = connectDatabase;
+}));
+router.post(routes_1.AuthRoutes.LOGIN, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield (0, authController_1.loginUser)(req, res);
+    }
+    catch (error) {
+        console.error('Login route error:', error);
+        res.status(500).json({ message: 'Internal Server Error', error });
+    }
+}));
+exports.default = router;

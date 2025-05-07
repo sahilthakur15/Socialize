@@ -23,5 +23,5 @@ const createUser = (name, email, password) => __awaiter(void 0, void 0, void 0, 
 });
 exports.default = {
     checkUser,
-    createUser
+    createUser,
 };

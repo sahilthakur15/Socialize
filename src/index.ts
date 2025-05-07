@@ -1,30 +1,25 @@
 import express, { Application, Request, Response } from 'express';
-import sequelize from './config/dbconnect';
-import "./models/usersModel";
-import userRoutes from './routes/userRoutes';
+import {connectDatabase} from './config/dbconnect';
+import './models/usersModel';
+import './models/postsModel'
+
 import { config } from 'dotenv';
+import  authRoutes  from './routes/authRoutes';
 config();
-
-
 
 const app: Application = express();
 const port: number = 3000;
 
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Database connection has been established successfully.');
-  })
-  .catch((error) => {
-    console.error('Unable to connect to the database:', error.message);
-  });
-
-  app.use('/api/users', userRoutes);
+connectDatabase();
+app.use(express.json());
 
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to my Server');
 });
+
+app.use('/api', authRoutes); 
+
 
 app.listen(port, () => {
   console.log(`Server is live on http://localhost:${port}`);

@@ -12,23 +12,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.connectDatabase = exports.dbconnect = void 0;
-const sequelize_1 = require("sequelize");
-const dotenv_1 = require("dotenv");
-const logger_1 = __importDefault(require("../utils/logger/logger"));
-(0, dotenv_1.config)();
-const dbconnect = new sequelize_1.Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
-});
-exports.dbconnect = dbconnect;
-const connectDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        yield dbconnect.authenticate();
-        logger_1.default.info('Connection has been established successfully.');
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+class PasswordHandler {
+    // Hash password
+    static hashPassword(password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bcrypt_1.default.hash(password, 10);
+        });
     }
-    catch (error) {
-        logger_1.default.error('Unable to connect to the database:', error);
+    // Compare password
+    static comparePassword(password, hashPassword) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bcrypt_1.default.compare(password, hashPassword);
+        });
     }
-});
-exports.connectDatabase = connectDatabase;
+}
+exports.default = PasswordHandler;
